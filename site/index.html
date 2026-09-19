@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Pre-workshop setup, primer and starter file brief for From Figma to Function, a hands-on Claude Code and Figma workshop in Berlin.">
+<style>
+  /* base reset: matches the hosted version's environment so this file renders identically */
+  :root{
+    color-scheme:light dark;
+    padding-top:env(safe-area-inset-top, 0px);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  body{margin:0;}
+  img{max-width:100%;}
+  [hidden]{display:none !important;}
+</style>
+<title>Figma to Function Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F6F3;
+  --surface:#FFFFFF;
+  --sunken:#EFEDE8;
+  --ink:#1E1E2E;
+  --ink-2:#4A4A52;
+  --ink-3:#7C7A85;
+  --line:#DFDCD5;
+  --line-soft:#EAE7E1;
+  --accent:#514EA8;
+  --accent-soft:#EDEBF8;
+  --ok:#1F7A45;
+  --ok-soft:#E4F3E2;
+  --warn:#7A6A00;
+  --warn-soft:#FFF38D;
+  --alert:#CC112C;
+  --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141419;
+    --surface:#1C1C23;
+    --sunken:#232330;
+    --ink:#F0EFEC;
+    --ink-2:#B6B4BE;
+    --ink-3:#8A8894;
+    --line:#32323F;
+    --line-soft:#2A2A35;
+    --accent:#A5A1F0;
+    --accent-soft:#25233C;
+    --ok:#7BD39A;
+    --ok-soft:#1B2E22;
+    --warn:#E8D77A;
+    --warn-soft:#332E14;
+    --alert:#FF7A8A;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141419;
+  --surface:#1C1C23;
+  --sunken:#232330;
+  --ink:#F0EFEC;
+  --ink-2:#B6B4BE;
+  --ink-3:#8A8894;
+  --line:#32323F;
+  --line-soft:#2A2A35;
+  --accent:#A5A1F0;
+  --accent-soft:#25233C;
+  --ok:#7BD39A;
+  --ok-soft:#1B2E22;
+  --warn:#E8D77A;
+  --warn-soft:#332E14;
+  --alert:#FF7A8A;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent);text-underline-offset:3px;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
+
+.wrap{max-width:1140px;margin:0 auto;padding-inline:20px;padding-block:0 96px;}
+
+/* ---------- Draft banner (remove before sending) ---------- */
+.draft{
+  background:var(--warn-soft);color:var(--warn);
+  border-bottom:1px solid rgba(0,0,0,.08);
+  font-family:var(--mono);font-size:13px;line-height:1.5;
+}
+.draft .di{max-width:1140px;margin:0 auto;padding:12px 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;}
+.draft b{font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+
+/* ---------- Masthead ---------- */
+.mast{padding-block:56px 40px;border-bottom:1px solid var(--line);}
+.eyebrow{
+  font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 20px;
+}
+h1{
+  font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,5.4vw,3.4rem);
+  line-height:1.04;letter-spacing:-.025em;margin:0;text-wrap:balance;max-width:16ch;
+}
+.standfirst{font-size:clamp(1.05rem,2vw,1.2rem);color:var(--ink-2);max-width:62ch;margin:22px 0 0;}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;}
+.fact{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 15px;color:var(--ink-2);
+}
+.fact.hot{background:var(--accent-soft);border-color:transparent;color:var(--accent);font-weight:600;}
+
+/* ---------- Layout ---------- */
+.cols{display:grid;grid-template-columns:232px 1fr;gap:56px;align-items:start;padding-block:48px 0;}
+main{min-width:0;}
+@media (max-width:860px){ .cols{grid-template-columns:1fr;gap:0;padding-block:28px 0;} }
+
+/* ---------- Rail ---------- */
+.rail{position:sticky;top:calc(env(safe-area-inset-top, 0px) + 28px);}
+@media (max-width:860px){
+  .rail{position:sticky;top:env(safe-area-inset-top, 0px);background:var(--paper);
+    padding-block:14px;border-bottom:1px solid var(--line);z-index:9;margin-bottom:28px;}
+}
+.meter{margin-bottom:22px;}
+.meter .mnum{font-family:var(--display);font-weight:700;font-size:2rem;letter-spacing:-.02em;line-height:1;}
+.meter .mlab{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-top:7px;}
+.bar{height:4px;background:var(--sunken);border-radius:999px;margin-top:12px;overflow:hidden;}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .35s ease;}
+.toc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+@media (max-width:860px){ .toc{display:none;} }
+.toc a{
+  display:block;text-decoration:none;color:var(--ink-2);font-size:14.5px;
+  padding:7px 0 7px 14px;border-left:2px solid var(--line-soft);
+}
+.toc a:hover{color:var(--ink);border-left-color:var(--ink-3);}
+
+/* ---------- Sections ---------- */
+section{padding-block:0 60px;scroll-margin-top:90px;}
+.shead{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:28px;}
+.snum{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--accent);}
+h2{font-family:var(--display);font-weight:600;font-size:1.55rem;letter-spacing:-.018em;margin:0;line-height:1.2;}
+.sdek{font-size:15px;color:var(--ink-3);margin-left:auto;font-family:var(--mono);letter-spacing:.04em;}
+@media (max-width:620px){ .sdek{margin-left:0;flex-basis:100%;} .shead{flex-wrap:wrap;} }
+p{margin:0 0 16px;max-width:66ch;}
+h3{font-family:var(--display);font-weight:600;font-size:1.08rem;letter-spacing:-.01em;margin:32px 0 10px;}
+
+/* ---------- Checklist ---------- */
+.steps{display:flex;flex-direction:column;gap:14px;margin:0;padding:0;list-style:none;}
+.step{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
+  transition:border-color .2s ease,background .2s ease;
+}
+.step.done{border-color:var(--ok);background:var(--ok-soft);}
+.step input[type=checkbox]{
+  appearance:none;-webkit-appearance:none;margin:3px 0 0;
+  width:22px;height:22px;border:2px solid var(--ink-3);border-radius:5px;
+  background:transparent;cursor:pointer;flex:0 0 auto;position:relative;
+}
+.step input[type=checkbox]:checked{background:var(--ok);border-color:var(--ok);}
+.step input[type=checkbox]:checked::after{
+  content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(43deg);
+}
+.step .sb{min-width:0;}
+.step label{font-weight:600;font-size:16.5px;cursor:pointer;display:block;line-height:1.35;}
+.step .sd{color:var(--ink-2);font-size:15px;margin-top:7px;}
+.step .sd p{margin:0 0 10px;}
+.step .sd p:last-child{margin-bottom:0;}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;background:var(--sunken);color:var(--ink-3);}
+.tag.v{background:var(--accent-soft);color:var(--accent);font-weight:600;}
+.tag.t{background:var(--warn-soft);color:var(--warn);font-weight:600;}
+
+/* ---------- Code ---------- */
+pre{
+  background:var(--ink);color:var(--paper);border-radius:9px;
+  padding:16px 18px;overflow-x:auto;margin:12px 0;
+  font-family:var(--mono);font-size:14px;line-height:1.7;
+}
+:root[data-theme="dark"] pre,:root:not([data-theme="light"]) pre{border:1px solid var(--line);}
+pre .c{color:#9C9AA6;}
+code{font-family:var(--mono);font-size:.92em;background:var(--sunken);border-radius:4px;padding:2px 6px;}
+pre code{background:none;padding:0;font-size:1em;color:inherit;}
+
+/* ---------- Callout ---------- */
+.note{
+  border-left:3px solid var(--accent);background:var(--surface);
+  padding:18px 22px;border-radius:0 9px 9px 0;margin:24px 0;
+}
+.note.alertish{border-left-color:var(--alert);}
+.note .nt{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;}
+.note p:last-child{margin-bottom:0;}
+
+/* ---------- Primer ---------- */
+.primer p{font-size:17px;max-width:64ch;}
+.primer strong{font-weight:600;}
+.pullquote{
+  font-family:var(--display);font-weight:600;font-size:clamp(1.4rem,3.4vw,1.85rem);
+  line-height:1.24;letter-spacing:-.02em;color:var(--ink);
+  border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+  padding-block:22px;margin:34px 0;max-width:24ch;text-wrap:balance;
+}
+
+/* ---------- Contents of the file ---------- */
+.kv{display:grid;grid-template-columns:auto 1fr;gap:0 26px;margin:0;}
+.kv dt{font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--accent);
+  padding:13px 0;border-top:1px solid var(--line-soft);white-space:nowrap;}
+.kv dd{margin:0;padding:13px 0;border-top:1px solid var(--line-soft);color:var(--ink-2);font-size:15.5px;}
+@media (max-width:620px){
+  .kv{grid-template-columns:1fr;}
+  .kv dt{padding-bottom:0;border-top:1px solid var(--line-soft);}
+  .kv dd{padding-top:4px;border-top:none;}
+}
+
+/* ---------- Diagnostic ---------- */
+.q{margin-bottom:26px;}
+.q .qt{font-weight:600;font-size:16px;margin-bottom:12px;}
+.opts{display:flex;flex-wrap:wrap;gap:9px;}
+.opt{
+  font-size:14.5px;padding:9px 16px;border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);color:var(--ink-2);cursor:pointer;font-family:var(--sans);
+  transition:all .16s ease;
+}
+.opt:hover{border-color:var(--ink-3);color:var(--ink);}
+.opt[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;}
+:root[data-theme="dark"] .opt[aria-pressed="true"],
+:root:not([data-theme="light"]) .opt[aria-pressed="true"]{color:var(--paper);}
+.copyrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:24px;}
+.btn{
+  font-family:var(--sans);font-size:15px;font-weight:600;
+  background:var(--ink);color:var(--paper);border:none;border-radius:8px;
+  padding:12px 22px;cursor:pointer;
+}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+.copystate{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ok);}
+
+/* ---------- Night rows ---------- */
+.night{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;background:var(--line-soft);
+  border:1px solid var(--line-soft);border-radius:10px;overflow:hidden;}
+.night div{background:var(--surface);padding:20px 22px;}
+.night .nl{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;}
+.night .nv{font-size:15.5px;color:var(--ink);}
+
+/* ---------- FAQ ---------- */
+details{border-bottom:1px solid var(--line-soft);padding:15px 0;}
+details summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center;}
+details summary::-webkit-details-marker{display:none;}
+details summary::after{content:"+";font-family:var(--mono);color:var(--ink-3);font-size:18px;flex:0 0 auto;}
+details[open] summary::after{content:"−";}
+details .body{padding-top:12px;color:var(--ink-2);font-size:15.5px;}
+details .body p:last-child{margin-bottom:0;}
+
+/* ---------- Colophon ---------- */
+.colophon{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:12.5px;line-height:1.7;color:var(--ink-3);max-width:64ch;}
+
+
+/* ---------- Play prompts ---------- */
+.prompts{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:none;}
+.pcard{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;}
+.pcard .pn{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--accent);padding-top:18px;}
+.pcard .pb{min-width:0;}
+.pcard pre{margin-top:0;}
+.pcard .pw{font-size:14.5px;color:var(--ink-2);margin:0;max-width:62ch;}
+
+/* ---------- Split panels ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:26px 0 0;align-items:stretch;}
+@media (max-width:720px){ .split{grid-template-columns:1fr;} }
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px;
+  display:flex;flex-direction:column;}
+.panel.accent{border-color:var(--accent);}
+.panel .pl{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:14px;}
+.panel.accent .pl{color:var(--accent);}
+.panel ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;}
+.panel li{font-size:15.5px;line-height:1.45;color:var(--ink-2);}
+.panel li b{color:var(--ink);font-weight:600;}
+
+/* ---------- Reference table ---------- */
+.tablewrap{overflow-x:auto;max-width:100%;margin:16px 0 18px;}
+table.ref{border-collapse:collapse;width:100%;min-width:480px;font-size:15px;}
+table.ref th{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);text-align:left;font-weight:600;padding:0 20px 10px 0;border-bottom:1px solid var(--line);}
+table.ref td{padding:12px 20px 12px 0;border-bottom:1px solid var(--line-soft);color:var(--ink-2);vertical-align:top;}
+table.ref td:first-child{color:var(--ink);font-weight:500;white-space:nowrap;}
+table.ref td:last-child{font-family:var(--mono);font-size:13.5px;color:var(--accent);padding-right:0;}
+
+@media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Co-Work &amp; Code · Berlin</p>
+    <h1>From Figma to Function</h1>
+    <p class="standfirst">Everything to do before the workshop. It takes about half an hour, and it is the difference between spending the evening building and spending it installing.</p>
+    <div class="facts">
+      <span class="fact hot">Do this by the day before</span>
+      <span class="fact">25 min setup</span>
+      <span class="fact">10 min playing</span>
+      <span class="fact">10 min reading</span>
+      <span class="fact">Doors 17:00 · Starts 17:30</span>
+    </div>
+  </header>
+
+  <div class="cols">
+
+    <aside class="rail">
+      <div class="meter">
+        <div class="mnum"><span id="doneN">0</span> / 9</div>
+        <div class="mlab">Ready to build</div>
+        <div class="bar"><i id="barFill"></i></div>
+      </div>
+      <ul class="toc">
+        <li><a href="#setup">Get set up</a></li>
+        <li><a href="#play">Ten minutes of play</a></li>
+        <li><a href="#primer">Read this first</a></li>
+        <li><a href="#which">Claude Code or Figma</a></li>
+        <li><a href="#file">The starter file</a></li>
+        <li><a href="#tellus">Tell us where you are</a></li>
+        <li><a href="#night">On the night</a></li>
+        <li><a href="#words">Words we will use</a></li>
+        <li><a href="#faq">If something breaks</a></li>
+      </ul>
+    </aside>
+
+    <main>
+
+      <!-- ============ 1 · SETUP ============ -->
+      <section id="setup">
+        <div class="shead">
+          <span class="snum">01</span>
+          <h2>Get set up</h2>
+          <span class="sdek">≈ 25 min</span>
+        </div>
+
+        <p>Nine checks, most of them under a minute. Do them on the laptop you are bringing, not the one at home. Tick them off as you go, this page remembers.</p>
+
+        <div class="note alertish">
+          <div class="nt">Do this part first</div>
+          <p>If your laptop is managed by an employer, check 5 needs permission to install software. Ask IT now rather than on the night. It is the single most common reason someone spends the workshop watching over a neighbour's shoulder.</p>
+        </div>
+
+        <ul class="steps" id="checklist">
+
+          <li class="step">
+            <input type="checkbox" id="c1" data-k="c1">
+            <div class="sb">
+              <label for="c1">A Claude account on a paid plan</label>
+              <div class="sd">
+                <p>Claude Code needs Pro or Max. The free tier will not run the build, and there is no way around this in the room.</p>
+                <p>If you are signing up for this workshop specifically, Pro is enough. You can cancel after.</p>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <input type="checkbox" id="c2" data-k="c2">
+            <div class="sb">
+              <label for="c2">A Figma account you can open on this laptop</label>
+              <div class="sd">
+                <p>Free is fine. Sign in before you arrive and confirm you can duplicate a community file, because the venue network is not the place to discover an SSO problem.</p>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <input type="checkbox" id="c3" data-k="c3">
+            <div class="sb">
+              <label for="c3">A terminal you can type into</label>
+              <div class="sd">
+                <p>On a Mac, Terminal is already installed. On Windows, use PowerShell. You do not need to know any commands. You need to be able to find the window and paste into it.</p>
+                <p>Open it once before the night so it is not the first unfamiliar thing you meet.</p>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <input type="checkbox" id="c4" data-k="c4">
+            <div class="sb">
+              <label for="c4">Node installed</label>
+              <div class="sd">
+                <p>Paste this into the terminal and press return:</p>
+                <pre><code>node --version</code></pre>
+                <p>If it prints a version number of 18 or higher, you are done. If it says the command is not found, install the LTS build from <a href="https://nodejs.org" rel="noopener">nodejs.org</a> and run it again.</p>
+                <div class="tagrow"><span class="tag v">Vidushi to verify</span></div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <input type="checkbox" id="c5" data-k="c5">
+            <div class="sb">
+              <label for="c5">Claude Code installed</label>
+              <div class="sd">
+                <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+                <p>On a Mac you may need <code>sudo</code> in front of that. On a managed laptop this is the step that needs IT permission.</p>
+                <div class="tagrow"><span class="tag v">Vidushi to verify</span></div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <input type="checkbox" id="c6" data-k="c6">
+            <div class="sb">
+              <label for="c6">Signed in and running</label>
+              <div class="sd">
+                <p>Type <code>claude</code> and press return. It will walk you through signing in with the account from step 1. Do this at home, on a network you trust.</p>
+                <div class="tagrow"><span class="tag v">Vidushi to verify</span></div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <input type="checkbox" id="c7" data-k="c7">
+            <div class="sb">
+              <label for="c7">The Figma connection switched on</label>
+              <div class="sd">
+                <p>This is what lets Claude Code read the frames and components in your Figma file rather than guessing from a picture. Vidushi will send the exact steps with the reminder email, and will walk through it again in the first half hour.</p>
+                <div class="tagrow"><span class="tag v">Vidushi to verify</span><span class="tag">Covered again in the room</span></div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <input type="checkbox" id="c8" data-k="c8">
+            <div class="sb">
+              <label for="c8">The self test</label>
+              <div class="sd">
+                <p>One check that proves the whole chain works. Run <code>claude</code>, then ask it exactly this:</p>
+                <pre><code>Which version are you running, and can you see my Figma connection?</code></pre>
+                <p>If it answers both halves, you are ready and you can stop. If it answers the first but not the second, go back to step 7. If it answers neither, start at step 5.</p>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <input type="checkbox" id="c9" data-k="c9">
+            <div class="sb">
+              <label for="c9">The starter file duplicated</label>
+              <div class="sd">
+                <p>Open the file in section 3 and duplicate it to your own drafts. Do not work in the shared copy, and do not leave this until the night.</p>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+
+        <div class="note">
+          <div class="nt">Stuck</div>
+          <p>Do not spend an evening on it. Reply to the reminder email with what you tried and where it stopped, and we will sort it before the day. We would rather fix it in advance than lose you for the first hour.</p>
+        </div>
+      </section>
+
+      <!-- ============ 2 · PLAY ============ -->
+      <section id="play">
+        <div class="shead">
+          <span class="snum">02</span>
+          <h2>Ten minutes of play</h2>
+          <span class="sdek">&#8776; 10 min</span>
+        </div>
+
+        <p>None of this is workshop material. It exists so that your first prompt is not typed in a room full of people while a timer runs, and because a version check proves an install works while actually building something proves the whole chain works. Throw all of it away afterwards.</p>
+
+        <p>Open a terminal in an empty folder, type <code>claude</code>, and run these in order.</p>
+
+        <ol class="prompts">
+          <li class="pcard">
+            <span class="pn">01</span>
+            <div class="pb">
+              <pre><code>Make a single HTML file called clock.html with a working
+analogue clock in it, then open it in my browser.</code></pre>
+              <p class="pw">Proves it can write real files on your machine and not just talk about them.</p>
+            </div>
+          </li>
+          <li class="pcard">
+            <span class="pn">02</span>
+            <div class="pb">
+              <pre><code>Make the clock face square and the hands thicker.
+Change nothing else.</code></pre>
+              <p class="pw">This is the actual workflow. Watch whether it edits the file or quietly rebuilds it from scratch. That difference is most of what the evening is about.</p>
+            </div>
+          </li>
+          <li class="pcard">
+            <span class="pn">03</span>
+            <div class="pb">
+              <pre><code>Read clock.html and tell me what you would criticise
+about it as a designer.</code></pre>
+              <p class="pw">It can review its own work. Notice how generic the criticism is when you have not told it what to look for.</p>
+            </div>
+          </li>
+          <li class="pcard">
+            <span class="pn">04</span>
+            <div class="pb">
+              <pre><code>Look at this Figma frame and describe the components
+you can see and what they are called.</code></pre>
+              <p class="pw">Point it at any file of your own, ideally a real one from work. This doubles as the Figma connection test, and what it says back about your layer names is worth arriving with.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="note">
+          <div class="nt">One instruction</div>
+          <p>Do not tidy anything it points out in prompt 4. Leave it exactly as it is and bring it with you. We will come back to it.</p>
+        </div>
+      </section>
+
+
+      <!-- ============ 2 · PRIMER ============ -->
+      <section id="primer" class="primer">
+        <div class="shead">
+          <span class="snum">03</span>
+          <h2>Read this first</h2>
+          <span class="sdek">≈ 5 min</span>
+        </div>
+
+        <p>There is a claim going around that you can paste a design into a model and get a working product out. It is half true, and the half it misses is the half you own.</p>
+
+        <p>A model reproduces the structure it is handed. Give it a screenshot and it has to guess. It invents names for things that had none, hardcodes every colour it can see, builds one static view because it was shown one static view, and rewrites half the file the moment you ask for a change. Give it a system and the guessing stops. Named components become named code. Tokens become variables. The states you drew get built, because they exist.</p>
+
+        <p>Same model. Same prompt. Different file.</p>
+
+        <div class="pullquote">Your design system is the prompt.</div>
+
+        <p>That is the argument the whole evening rests on, and it means most of the quality is decided before anyone types anything. Three consequences, and they are all yours.</p>
+
+        <h3>Naming became functional</h3>
+        <p>A layer called <code>Frame 427</code> used to be untidy. Now it is an instruction with nothing in it. A layer called <code>Badge/Status/Open</code> produces a component your team can reference, extend and find again. Renaming a file is not admin any more. It is writing the spec.</p>
+
+        <h3>The system is the leverage, not the screen</h3>
+        <p>Anyone can generate one screen. The real test is the second one, and the fiftieth, and what happens when a client asks for a different accent colour at four on a Thursday. If that change costs you one token, you built a system. If it costs you an afternoon, you built a very tidy screenshot.</p>
+
+        <h3>Your eye is the part that did not get automated</h3>
+        <p>The model is extremely good at producing something that looks finished. It is not good at holding a spacing scale, keeping hierarchy intact once real content arrives, building the states nobody drew, or leaving a focus ring where a keyboard user needs one. Those are design judgements and they are still yours. On the night we turn them into a six-pass critique you can run on anything, including work that has nothing to do with this.</p>
+
+        <p>You do not have to agree with any of this in advance. You will get to test it directly: at one point in the evening you will change a single token and watch the whole screen follow, or find that it does not, which is the more useful outcome.</p>
+      </section>
+
+      <!-- ============ 4 · WHICH TOOL ============ -->
+      <section id="which">
+        <div class="shead">
+          <span class="snum">04</span>
+          <h2>Claude Code or a Figma prototype</h2>
+          <span class="sdek">&#8776; 4 min</span>
+        </div>
+
+        <p>The honest answer, before anyone sells you anything. These are not competing tools. They answer different questions, and most of the waste comes from using one to do the other's job.</p>
+
+        <div class="split">
+          <div class="panel">
+            <div class="pl">Reach for a Figma prototype</div>
+            <ul>
+              <li>You are testing a <b>sequence</b>, and only the order of screens matters</li>
+              <li>You need it inside the hour and it only has to survive one meeting</li>
+              <li>The audience needs to see <b>intent</b>, not behaviour</li>
+              <li>The idea lives in motion and transition, where Figma's tooling is simply better</li>
+              <li>You are still deciding what to build</li>
+            </ul>
+          </div>
+          <div class="panel accent">
+            <div class="pl">Reach for Claude Code</div>
+            <ul>
+              <li>It needs <b>real content</b>, real lengths, real state. A prototype fakes all three</li>
+              <li>Someone has to use it on their own device, at their own size, with a keyboard</li>
+              <li>You will change it repeatedly and want the change to <b>propagate</b></li>
+              <li>It is going to become the real thing, or be handed over as more than a picture</li>
+              <li>You have already decided, and now you need proof</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>The short version</h3>
+        <p>Prototype to decide. Build to prove. A prototype answers "is this the right flow"; a build answers "does this actually hold up when the content is long, the network is slow and the list is empty". Neither answer substitutes for the other.</p>
+
+        <h3>Why a tool you type into, rather than one you click in</h3>
+        <p>Plenty of tools now generate an interface from a canvas, and they get to a first screen faster. What you get here instead is the file: something with a history you can read, that you can point at a design system and hold to it, and where changing one value changes fifty places. That matters from roughly the second screen onwards, which is also where most real work starts.</p>
+
+        <div class="note">
+          <div class="nt">What this is not</div>
+          <p>What you build on the night is not a production codebase, and we will not pretend otherwise. It is a real, running interface built from your design decisions. Where that is enough and where it is not is a fair question, and a good one for the last half hour.</p>
+        </div>
+      </section>
+
+
+      <!-- ============ 3 · FILE ============ -->
+      <section id="file">
+        <div class="shead">
+          <span class="snum">05</span>
+          <h2>The starter file</h2>
+          <span class="sdek">≈ 3 min</span>
+        </div>
+
+        <p>Everybody builds from the same file, so nobody spends the evening deciding what to make. It is a support inbox called Signal: unglamorous on purpose, and rich in exactly the things that expose a weak handoff.</p>
+
+        <p>Duplicate it to your own drafts before you arrive, and spend three minutes reading the layer names. That is the only homework in this section, and it matters more than it sounds.</p>
+
+        <dl class="kv">
+          <dt>Tokens</dt><dd>Colour, spacing, radius, type and density, as Figma variables rather than styles</dd>
+          <dt>Components</dt><dd>Nine, with every variant drawn: buttons, status badges, filter chips, ticket rows, metric cards, empty and loading states</dd>
+          <dt>Frames</dt><dd>Desktop and mobile, plus separate frames for empty, loading and error</dd>
+          <dt>One more</dt><dd>A frame called Change Request. Do not open it before the night, it gives away the best part</dd>
+        </dl>
+
+        <h3>If you have only ever used styles</h3>
+        <p>This is the one Figma feature worth ten minutes before you arrive. A style is a saved appearance you apply to a layer. A variable is a named value that layers point at, which is what lets one change travel through a whole screen instead of stopping at the layer you edited. The starter file is built on variables throughout. You do not need to be able to build them yet, only to recognise them when you open the file.</p>
+
+        <h3>The naming convention</h3>
+        <p>A reference, not a lesson. Skim it now, come back to it on the night.</p>
+
+        <div class="tablewrap">
+          <table class="ref">
+            <thead><tr><th>Thing</th><th>Pattern</th><th>Example in the file</th></tr></thead>
+            <tbody>
+              <tr><td>Component</td><td><code>Category/Name</code></td><td>Card/Metric</td></tr>
+              <tr><td>Variant</td><td><code>Category/Name/Variant</code></td><td>Badge/Status/Open</td></tr>
+              <tr><td>Frame</td><td><code>Screen/Context</code></td><td>Inbox/Desktop</td></tr>
+              <tr><td>Colour token</td><td><code>color/role/level</code></td><td>color/surface/raised</td></tr>
+              <tr><td>Spacing token</td><td><code>space/N</code></td><td>space/16</td></tr>
+              <tr><td>Type token</td><td><code>type/role</code></td><td>type/body/default</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>One rule holds all of it together: if a name does not say what the thing is for, it is wrong.</p>
+
+        <div class="copyrow">
+          <a class="btn" href="#" id="figmaLink">Open the starter file</a>
+          <span class="tag t">Link to be added</span>
+        </div>
+
+        <div class="note">
+          <div class="nt">Worth knowing</div>
+          <p>The file has two faults in it, put there deliberately. You are not meant to find them yet. When they surface in your build, that is the workshop working as designed.</p>
+        </div>
+      </section>
+
+      <!-- ============ 4 · DIAGNOSTIC ============ -->
+      <section id="tellus">
+        <div class="shead">
+          <span class="snum">06</span>
+          <h2>Tell us where you are</h2>
+          <span class="sdek">≈ 1 min</span>
+        </div>
+
+        <p>Three questions. They decide how fast we move in the first hour, so an honest answer is worth more than an impressive one. Pick your answers, copy them, and paste them into a reply to the reminder email.</p>
+
+        <div class="q">
+          <div class="qt">1 · Have you used Claude Code before?</div>
+          <div class="opts" data-q="Claude Code">
+            <button class="opt" type="button" aria-pressed="false">Never opened it</button>
+            <button class="opt" type="button" aria-pressed="false">Tried it once or twice</button>
+            <button class="opt" type="button" aria-pressed="false">Use it regularly</button>
+          </div>
+        </div>
+
+        <div class="q">
+          <div class="qt">2 · How do you work with design systems today?</div>
+          <div class="opts" data-q="Design systems">
+            <button class="opt" type="button" aria-pressed="false">I use one someone else built</button>
+            <button class="opt" type="button" aria-pressed="false">I build and maintain them</button>
+            <button class="opt" type="button" aria-pressed="false">Mostly one-off files, no system</button>
+          </div>
+        </div>
+
+        <div class="q">
+          <div class="qt">3 · What would make the evening worth it for you?</div>
+          <div class="opts" data-q="Goal">
+            <button class="opt" type="button" aria-pressed="false">Shipping without waiting on a developer</button>
+            <button class="opt" type="button" aria-pressed="false">A repeatable workflow for client work</button>
+            <button class="opt" type="button" aria-pressed="false">Knowing whether this is real or hype</button>
+            <button class="opt" type="button" aria-pressed="false">Something else, I will write it in</button>
+          </div>
+        </div>
+
+        <div class="copyrow">
+          <button class="btn" type="button" id="copyBtn" disabled>Copy my answers</button>
+          <span class="copystate" id="copyState" hidden>Copied</span>
+        </div>
+      </section>
+
+      <!-- ============ 5 · NIGHT ============ -->
+      <section id="night">
+        <div class="shead">
+          <span class="snum">07</span>
+          <h2>On the night</h2>
+        </div>
+
+        <div class="night">
+          <div><div class="nl">Bring</div><div class="nv">Your laptop, its charger, and headphones if you focus better with them</div></div>
+          <div><div class="nl">Doors</div><div class="nv">17:00, so setup problems have somewhere to go before we start</div></div>
+          <div><div class="nl">We start</div><div class="nv">17:30 sharp, and the first half hour is the one you cannot catch up on</div></div>
+          <div><div class="nl">Hands on</div><div class="nv">Two of the three hours are you building, not us talking</div></div>
+          <div><div class="nl">Networking</div><div class="nv">From 20:30, once the building is done</div></div>
+          <div><div class="nl">Photos</div><div class="nv">Taken for the community and for promotion. Tell us before we start if you would rather not be in them</div></div>
+        </div>
+
+        <h3>What you take home</h3>
+        <p>Within 48 hours you get the starter file, a rules file template, the build prompts, the six-pass critique checklist, and a troubleshooting guide written from what actually broke on the night rather than a generic list. Keep them and reuse them on your own work. That is the point of the evening.</p>
+      </section>
+
+      <!-- ============ 8 · WORDS ============ -->
+      <section id="words">
+        <div class="shead">
+          <span class="snum">08</span>
+          <h2>Words we will use</h2>
+          <span class="sdek">&#8776; 2 min</span>
+        </div>
+
+        <p>So that nobody spends the evening quietly decoding a term rather than asking about it.</p>
+
+        <dl class="kv">
+          <dt>Token</dt><dd>A named value, like a colour or a spacing step, that things point at instead of holding a raw number</dd>
+          <dt>Variable</dt><dd>Figma's implementation of a token. Distinct from a style, which saves an appearance rather than a value</dd>
+          <dt>Reference</dt><dd>When one thing points at another rather than copying it. A row that references a badge component updates when the badge does. A row with its own hand-built pill does not</dd>
+          <dt>State</dt><dd>What a thing looks like under different conditions: hovered, focused, disabled, empty, loading, failed. Most designs draw one state and inherit the rest by accident</dd>
+          <dt>Context file</dt><dd>A plain text file in a project that the model reads every time, so you stop repeating the same instructions in every conversation</dd>
+          <dt>The connection</dt><dd>The mechanism that lets Claude Code read your Figma file directly. You do not need to know how it works, only that it is on</dd>
+          <dt>Terminal</dt><dd>The text window you type commands into. Claude Code runs there rather than in a browser tab</dd>
+        </dl>
+      </section>
+
+      <!-- ============ 9 · FAQ ============ -->
+      <section id="faq">
+        <div class="shead">
+          <span class="snum">09</span>
+          <h2>If something breaks</h2>
+        </div>
+
+        <details>
+          <summary>I cannot install anything on my work laptop</summary>
+          <div class="body"><p>Ask IT this week, and if the answer is no, bring a personal machine. Tell us in advance either way and we will pair you with someone rather than leave you watching.</p></div>
+        </details>
+        <details>
+          <summary>I am not a developer. Is this going to lose me?</summary>
+          <div class="body"><p>No. You will type into a terminal and you will read code you did not write, but nothing here asks you to write code. Every design judgement in the room is one you already make. The technical floor is the setup above, and once it is done it stays done.</p></div>
+        </details>
+        <details>
+          <summary>Can I bring my own project instead of the starter file?</summary>
+          <div class="body"><p>Not for the build block. Everyone on the same file is what makes the critique hour work, because we can compare builds directly. Bring your own file for the questions at the end and we will look at it properly.</p></div>
+        </details>
+        <details>
+          <summary>Do I need to finish the reading?</summary>
+          <div class="body"><p>The setup is the part that matters. The reading saves you about fifteen minutes of orientation in the room, but you will not be lost without it.</p></div>
+        </details>
+        <details>
+          <summary>What if I cannot make it any more?</summary>
+          <div class="body"><p>Release your ticket on the event page as early as you can. There is a waitlist and these rooms are small.</p></div>
+        </details>
+
+        <div class="colophon">
+          Built with the tokens from the starter file: ink 1E1E2E, accent 514EA8, the same spacing scale you will be building against.<br>
+          Hooman Abbasi · Vidushi Malhan · Co-Work &amp; Code, Berlin
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY = 'f2f-prep-v1';
+
+  /* ---- checklist persistence (per viewer, best effort) ---- */
+  function load(){
+    try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; }
+  }
+  function save(state){
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  var state = load();
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#checklist input[type=checkbox]'));
+  var doneN = document.getElementById('doneN');
+  var barFill = document.getElementById('barFill');
+
+  function paint(){
+    var n = 0;
+    boxes.forEach(function(b){
+      if(b.checked){ n++; }
+      b.closest('.step').classList.toggle('done', b.checked);
+    });
+    doneN.textContent = n;
+    barFill.style.width = (n / boxes.length * 100) + '%';
+  }
+
+  boxes.forEach(function(b){
+    if(state[b.dataset.k]){ b.checked = true; }
+    b.addEventListener('change', function(){
+      state[b.dataset.k] = b.checked;
+      save(state);
+      paint();
+    });
+  });
+  paint();
+
+  /* ---- diagnostic ---- */
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.opts'));
+  var copyBtn = document.getElementById('copyBtn');
+  var copyState = document.getElementById('copyState');
+
+  groups.forEach(function(g){
+    g.addEventListener('click', function(e){
+      var btn = e.target.closest('.opt');
+      if(!btn) return;
+      var already = btn.getAttribute('aria-pressed') === 'true';
+      Array.prototype.forEach.call(g.querySelectorAll('.opt'), function(o){
+        o.setAttribute('aria-pressed', 'false');
+      });
+      btn.setAttribute('aria-pressed', already ? 'false' : 'true');
+      copyState.hidden = true;
+      copyBtn.disabled = !groups.some(function(gg){
+        return gg.querySelector('.opt[aria-pressed="true"]');
+      });
+    });
+  });
+
+  copyBtn.addEventListener('click', function(){
+    var lines = groups.map(function(g){
+      var picked = g.querySelector('.opt[aria-pressed="true"]');
+      return g.dataset.q + ': ' + (picked ? picked.textContent.trim() : 'no answer');
+    });
+    var text = 'From Figma to Function, pre-workshop answers\n\n' + lines.join('\n');
+    function done(){
+      copyState.hidden = false;
+      setTimeout(function(){ copyState.hidden = true; }, 2600);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Figma to Function - Co-Work &amp; Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fafafa;
+  --ink:#1e1e2e;
+  --body:#4a4a52;
+  --body2:#555;
+  --muted:#9a988f;
+  --dim:#b7b5ac;
+  --peri:#d5d7f5;
+  --pale:#e4f3e2;
+  --red:#cc112c;
+  --yellow:#fff38d;
+  --purple:#514ea8;
+  --purple-tint:#f3f0fa;
+  --notion:#ede9e1;
+  --notion-text:#3a3a44;
+  --gold:#7a6a00;
+  --greenbar:#1f7a45;
+  --greentext:#eafff0;
+  --cardline:#e8e6e0;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:#111114;overflow:hidden;}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+
+/* ---------- Stage: fixed 1280x720, scaled to fit ---------- */
+.viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
+.stage{width:1280px;height:720px;position:relative;transform-origin:center center;}
+.slide{
+  position:absolute;inset:0;
+  background:var(--paper);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .35s ease, visibility .35s ease;
+  overflow:hidden;
+}
+.slide.is-active{opacity:1;visibility:visible;pointer-events:auto;z-index:2;}
+.slide.peri{background:var(--peri);}
+.slide.hands{background:var(--pale);}
+.slide.red{background:var(--red);}
+.slide.chapter{background:var(--yellow);}
+
+/* content box respects 64 / 78 padding */
+.box{position:absolute;inset:64px 78px;display:flex;flex-direction:column;justify-content:center;}
+.box.top{justify-content:flex-start;padding-top:22px;}
+.slide.hands .box{inset:56px 0 0 0;padding:44px 78px 74px;justify-content:center;}
+
+/* ---------- Corner chrome ---------- */
+.ch{position:absolute;font-family:var(--mono);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);z-index:5;}
+.ch.tl{top:30px;left:78px;font-size:14px;}
+.ch.tr{top:30px;right:78px;font-size:14px;}
+.ch.bl{bottom:26px;left:78px;font-size:12px;font-weight:500;}
+.ch.br{bottom:26px;right:78px;font-size:12px;font-weight:500;color:var(--dim);letter-spacing:1.2px;}
+.ch.br .n{color:var(--red);font-weight:700;}
+.slide.peri .ch, .slide.chapter .ch{color:rgba(30,30,46,.5);}
+.slide.peri .ch.br, .slide.chapter .ch.br{color:rgba(30,30,46,.4);}
+.slide.red .ch{color:rgba(250,250,250,.65);}
+.slide.red .ch.br{color:rgba(250,250,250,.45);}
+.slide.red .ch.br .n{color:#fff;}
+.slide.hands .ch.tl,.slide.hands .ch.tr{display:none;}
+
+/* ---------- Type roles ---------- */
+h1{font-family:var(--serif);font-weight:800;color:var(--ink);letter-spacing:-.5px;line-height:1.04;}
+.title-xl{font-size:70px;letter-spacing:-1px;max-width:20ch;}
+.title-lg{font-size:58px;max-width:22ch;}
+.title-md{font-size:48px;max-width:26ch;}
+.subline{font-family:var(--sans);font-size:21px;line-height:1.45;color:var(--body2);max-width:78ch;margin-top:16px;}
+.kicker{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+
+.pill{display:inline-block;font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;background:var(--yellow);color:var(--gold);border-radius:999px;padding:9px 22px;}
+.tab{align-self:flex-start;background:var(--yellow);border-radius:12px;padding:13px 20px;font-family:var(--serif);font-weight:400;font-size:21px;color:var(--ink);margin-top:30px;line-height:1.3;}
+.plainsay{align-self:flex-start;font-family:var(--serif);font-weight:400;font-size:21px;color:var(--ink);margin-top:30px;line-height:1.3;}
+
+.hl{font-weight:700;padding:1px 7px;border-radius:5px;}
+.hl.p{background:var(--peri);color:var(--purple);}
+.hl.n{background:var(--notion);color:var(--notion-text);}
+.hl.y{background:var(--yellow);color:var(--gold);}
+
+/* ---------- Centered archetype (title / checkpoint) ---------- */
+.center{align-items:center;text-align:center;justify-content:center;}
+.center h1{max-width:20ch;}
+.center .subline{max-width:56ch;text-align:center;}
+.center .pill{margin-top:34px;}
+
+/* ---------- Chapter divider ---------- */
+.chapter .box{justify-content:center;}
+.chap-n{font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:26px;}
+.chap-name{font-family:var(--serif);font-weight:800;font-size:92px;line-height:1;color:var(--ink);letter-spacing:-1px;}
+
+/* ---------- Red closing ---------- */
+.slide.red h1{color:var(--paper);font-size:78px;}
+.slide.red .subline{color:rgba(250,250,250,.85);}
+
+/* ---------- Hands-on bar ---------- */
+.handsbar{position:absolute;top:0;left:0;right:0;height:56px;background:var(--greenbar);color:var(--greentext);
+  display:flex;align-items:center;justify-content:space-between;padding:0 78px;
+  font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;z-index:4;}
+.steps{display:flex;flex-direction:column;gap:22px;margin-top:34px;}
+.step{display:flex;align-items:flex-start;gap:20px;}
+.step .circ{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;
+  font-family:var(--mono);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.step .txt{font-size:21px;line-height:1.4;color:var(--ink);max-width:70ch;padding-top:4px;}
+.step .txt code{font-family:var(--mono);font-size:18px;background:#fff;border:1px solid var(--cardline);border-radius:5px;padding:1px 7px;}
+
+/* ---------- Rows (agenda / list) ---------- */
+.rows{margin-top:26px;display:flex;flex-direction:column;}
+.rows .r{display:grid;grid-template-columns:96px 1fr 128px;gap:20px;align-items:baseline;
+  padding:13px 0;border-bottom:1px solid var(--cardline);}
+.rows .r:first-child{border-top:1px solid var(--cardline);}
+.rows .t{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--ink);letter-spacing:.5px;}
+.rows .l{font-size:19px;color:var(--ink);font-weight:500;}
+.rows .w{font-family:var(--mono);font-size:13px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);text-align:right;}
+.rows .r.mine .w{color:var(--red);font-weight:700;}
+
+/* ---------- Numbered list ---------- */
+.nums{margin-top:30px;display:flex;flex-direction:column;gap:0;}
+.nums li{list-style:none;display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:baseline;
+  padding:16px 0;border-bottom:1px solid var(--cardline);}
+.nums li:first-child{border-top:1px solid var(--cardline);}
+.nums .n{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--red);letter-spacing:1px;}
+.nums b{display:block;font-weight:600;font-size:22px;color:var(--ink);}
+.nums span.d{display:block;font-size:18px;line-height:1.4;color:var(--body2);margin-top:5px;max-width:76ch;}
+
+/* two-column numbered variant */
+.nums.two{display:grid;grid-template-columns:1fr 1fr;column-gap:46px;}
+.nums.two li:nth-child(2){border-top:1px solid var(--cardline);}
+
+/* ---------- Cards ---------- */
+.cards{display:flex;gap:22px;margin-top:34px;align-items:stretch;}
+.card{flex:1;background:#fff;border:1px solid var(--cardline);border-radius:16px;padding:30px 26px;
+  display:flex;flex-direction:column;justify-content:flex-start;}
+.card .clab{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;}
+.card .ct{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);margin-bottom:12px;line-height:1.1;}
+.card .cd{font-size:18px;line-height:1.45;color:var(--body);}
+.card ul{margin-top:4px;}
+.card li{list-style:none;font-size:18px;line-height:1.4;color:var(--body);padding:7px 0;}
+
+/* ---------- Comparison boxes ---------- */
+.compare{display:flex;gap:22px;margin-top:32px;align-items:stretch;}
+.cbox{flex:1;background:#fff;border:1px solid var(--cardline);border-radius:16px;padding:28px 26px;
+  display:flex;flex-direction:column;justify-content:flex-start;}
+.cbox .chead{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink);margin-bottom:18px;}
+.cbox .row{display:flex;align-items:flex-start;gap:12px;padding:9px 0;}
+.cbox .mark{flex:0 0 auto;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;margin-top:2px;}
+.cbox .mark.bad{background:var(--red);}
+.cbox .mark.good{background:var(--greenbar);}
+.cbox .row span{font-size:18px;line-height:1.4;color:var(--body);}
+.cbox .row b{color:var(--ink);font-weight:600;}
+
+/* ---------- Flow diagram ---------- */
+.flow{display:flex;align-items:stretch;gap:20px;margin-top:36px;}
+.fcol{display:flex;flex-direction:column;gap:10px;justify-content:center;}
+.fnode{border-radius:12px;padding:14px 18px;font-size:18px;line-height:1.25;font-weight:500;text-align:center;}
+.fnode.in{background:var(--purple-tint);color:var(--purple);border:1px solid #e0daf2;}
+.fnode.model{background:var(--yellow);color:var(--gold);font-family:var(--mono);font-weight:700;font-size:19px;letter-spacing:1.5px;text-transform:uppercase;padding:26px 30px;display:flex;align-items:center;}
+.fnode.out{background:var(--pale);color:var(--greenbar);border:1px solid #cfe8cc;padding:26px 30px;display:flex;align-items:center;font-weight:600;}
+.farrow{display:flex;align-items:center;color:var(--red);font-size:26px;font-weight:700;}
+
+/* ---------- Mono code block ---------- */
+.code{margin-top:30px;background:var(--ink);border-radius:14px;padding:26px 28px;
+  font-family:var(--mono);font-size:18px;line-height:1.65;color:var(--paper);white-space:pre-wrap;}
+.code .cm{color:#b7b5ac;}
+.code .ky{color:var(--yellow);}
+.mini{font-family:var(--mono);font-size:17px;background:#f2f1ee;border:1px solid var(--cardline);border-radius:6px;padding:3px 9px;display:inline-block;color:var(--ink);}
+
+/* ---------- Stats ---------- */
+.stats{display:flex;gap:22px;margin-top:36px;align-items:stretch;}
+.stat{flex:1;background:#fff;border:1px solid var(--cardline);border-radius:16px;padding:30px 26px;}
+.stat .num{font-family:var(--serif);font-weight:800;font-size:64px;line-height:1;color:var(--ink);letter-spacing:-1px;}
+.stat .sd{font-size:18px;line-height:1.45;color:var(--body);margin-top:14px;}
+.stat .src{font-family:var(--mono);font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-top:16px;}
+
+/* ---------- Take-home pills ---------- */
+.plist{display:flex;flex-direction:column;gap:12px;margin-top:32px;align-items:flex-start;}
+.plist .p{background:#fff;border:1px solid var(--cardline);border-radius:999px;padding:12px 24px;font-size:19px;color:var(--ink);}
+.plist .p b{font-weight:600;}
+
+/* ---------- Presenter notes ---------- */
+.notes{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#17171c;color:#e7e7ea;
+  padding:18px 26px 20px;border-top:3px solid var(--red);display:none;max-height:34vh;overflow:auto;}
+body.notes-on .notes{display:block;}
+.notes .nmeta{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#8d8d97;margin-bottom:8px;}
+.notes .nmeta .time{color:var(--yellow);font-weight:700;}
+.notes .nbody{font-size:15px;line-height:1.55;max-width:130ch;}
+.notes .nbody b{color:#fff;}
+.notes .nbody em{color:var(--yellow);font-style:normal;font-weight:600;}
+.sn{display:none;}
+
+/* ---------- Nav chrome ---------- */
+.nav{position:fixed;right:18px;bottom:18px;z-index:50;display:flex;align-items:center;gap:8px;
+  opacity:0;transition:opacity .35s ease;pointer-events:none;}
+body.ui-on .nav,body.notes-on .nav{opacity:1;pointer-events:auto;}
+body.notes-on .nav{bottom:calc(34vh + 14px);}
+.nav button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;
+  width:38px;height:38px;border-radius:8px;cursor:pointer;font-size:15px;font-family:var(--sans);
+  display:flex;align-items:center;justify-content:center;}
+.nav button:hover{background:rgba(255,255,255,.2);}
+.nav button:disabled{opacity:.25;cursor:default;}
+.hint{position:fixed;left:18px;bottom:20px;z-index:50;font-family:var(--mono);font-size:11px;
+  letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.45);transition:opacity .4s ease;}
+body.notes-on .hint{bottom:calc(34vh + 18px);}
+.hint.gone{opacity:0;}
+@media print{.nav,.hint,.notes{display:none !important;}}
+</style>
+</head>
+<body>
+
+<div class="viewport"><div class="stage" id="stage">
+
+<!-- ================= 1 · TITLE ================= -->
+<section class="slide peri" data-chap="Figma to Function" data-time="17:30" data-seg="Hooman">
+  <div class="box center">
+    <h1 class="title-xl">From Figma to Function</h1>
+    <p class="subline">Design to live interface with Claude Code.</p>
+    <span class="pill">Berlin · 17:00 - 20:30 · Hands on</span>
+  </div>
+  <div class="sn"><b>Open cold, no preamble.</b> "Everyone in this room can already make a design that looks finished. Tonight is about what happens to that design when a model reads it." Name the two hosts and the split: Vidushi runs the tooling, I run the design calls. <em>Do not demo anything yet.</em></div>
+</section>
+
+<!-- ================= 2 · TONIGHT ================= -->
+<section class="slide" data-chap="Figma to Function" data-time="17:32" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-lg">Tonight</h1>
+    <p class="subline">Three hours. One screen. A method you can repeat on Monday.</p>
+    <div class="rows">
+      <div class="r mine"><span class="t">17:30</span><span class="l">Welcome and the reframe</span><span class="w">Hooman</span></div>
+      <div class="r"><span class="t">17:45</span><span class="l">Setup: Claude Code and the Figma connection</span><span class="w">Vidushi</span></div>
+      <div class="r mine"><span class="t">18:10</span><span class="l">The handoff contract</span><span class="w">Hooman</span></div>
+      <div class="r"><span class="t">18:25</span><span class="l">Guided build, four rungs</span><span class="w">Both</span></div>
+      <div class="r mine"><span class="t">19:00</span><span class="l">Critique and iteration</span><span class="w">Hooman</span></div>
+      <div class="r"><span class="t">20:00</span><span class="l">Questions</span><span class="w">Both</span></div>
+      <div class="r"><span class="t">20:30</span><span class="l">Networking</span><span class="w">Everyone</span></div>
+    </div>
+  </div>
+  <div class="sn"><b>30 seconds only.</b> Point at 18:25 and 19:20: "Two thirds of tonight is your hands on your keyboard." Set the rule: interrupt during the build blocks, hold questions during the teaching blocks.</div>
+</section>
+
+<!-- ================= 3 · WHAT YOU LEAVE WITH ================= -->
+<section class="slide" data-chap="Figma to Function" data-time="17:34" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-lg">What You Leave With</h1>
+    <p class="subline">Not a recording you never watch. Files you open again on Monday.</p>
+    <ol class="nums">
+      <li><span class="n">01</span><span><b>A working interface</b><span class="d">Built from a real Figma frame, with its states, running on your own machine.</span></span></li>
+      <li><span class="n">02</span><span><b>A rules file</b><span class="d">The one file that makes every future project start from your system instead of from nothing.</span></span></li>
+      <li><span class="n">03</span><span><b>A six-pass critique checklist</b><span class="d">The method for turning a plausible build into a shippable one.</span></span></li>
+      <li><span class="n">04</span><span><b>The starter Figma file</b><span class="d">Design system, components, states. Yours to strip and reuse on client work.</span></span></li>
+    </ol>
+  </div>
+  <div class="sn"><b>This is the promise slide.</b> Say the sending window out loud: within 48 hours. People relax once they know they do not have to take notes. <em>Then close the laptop lid metaphor:</em> "For the next fifteen minutes, nothing to type."</div>
+</section>
+
+<!-- ================= 4 · HANDOFF TO VIDUSHI ================= -->
+<section class="slide red" data-chap="Figma to Function" data-time="17:45" data-seg="Handoff">
+  <div class="box center">
+    <h1>Over to Vidushi.</h1>
+    <p class="subline">Setup: Claude Code, the Figma connection, your first run.</p>
+  </div>
+  <div class="sn"><b>Hard handoff at 17:45.</b> Do not run over. While Vidushi has the room, walk the floor and check who is stuck on install, so the 18:25 build does not open with setup problems. <em>Come back at 18:10.</em></div>
+</section>
+
+<!-- ================= 5 · CHAPTER 1 ================= -->
+<section class="slide chapter" data-chap="Chapter 1 · The Handoff" data-time="18:10" data-seg="Hooman">
+  <div class="box">
+    <div class="chap-n">Chapter 1</div>
+    <div class="chap-name">The Handoff</div>
+  </div>
+  <div class="sn"><b>Fifteen minutes, no build.</b> The whole chapter argues one point: the model is not the variable, your file is. Keep energy up, they have just been installing things.</div>
+</section>
+
+<!-- ================= 6 · THE PROMISE ================= -->
+<section class="slide peri" data-chap="Chapter 1 · The Handoff" data-time="18:11" data-seg="Hooman">
+  <div class="box center">
+    <h1 class="title-lg">Paste a design in, get a working product out.</h1>
+    <span class="pill">The promise</span>
+  </div>
+  <div class="sn"><b>Say it as though you believe it.</b> Ask for hands: "Who has tried this and got something you would actually ship?" Usually two or three hands, then qualified. <em>Let the silence do the work before you turn the slide.</em></div>
+</section>
+
+<!-- ================= 7 · WHAT ACTUALLY HAPPENS ================= -->
+<section class="slide" data-chap="Chapter 1 · The Handoff" data-time="18:13" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">What Actually Happens</h1>
+    <p class="subline">The model reproduces the structure you give it. Whatever that structure is.</p>
+    <div class="compare">
+      <div class="cbox">
+        <div class="chead">A screenshot goes in</div>
+        <div class="row"><span class="mark bad">✕</span><span>Unnamed layers become <b>guessed structure</b></span></div>
+        <div class="row"><span class="mark bad">✕</span><span>Sampled colors become <b>hardcoded hex</b></span></div>
+        <div class="row"><span class="mark bad">✕</span><span>No states means <b>one static view</b></span></div>
+        <div class="row"><span class="mark bad">✕</span><span>A change request becomes <b>a rewrite</b></span></div>
+      </div>
+      <div class="cbox">
+        <div class="chead">A system goes in</div>
+        <div class="row"><span class="mark good">✓</span><span>Named components become <b>named code</b></span></div>
+        <div class="row"><span class="mark good">✓</span><span>Tokens become <b>variables</b></span></div>
+        <div class="row"><span class="mark good">✓</span><span>Defined states become <b>states in the build</b></span></div>
+        <div class="row"><span class="mark good">✓</span><span>A change request becomes <b>one value</b></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="sn"><b>The spine of the whole workshop.</b> Both columns used the same model and the same prompt. The only variable that moved is the file. <em>Land it: "Nobody in this room is getting worse output because they have a worse model."</em></div>
+</section>
+
+<!-- ================= 8 · THE REFRAME ================= -->
+<section class="slide peri" data-chap="Chapter 1 · The Handoff" data-time="18:15" data-seg="Hooman">
+  <div class="box center">
+    <h1 class="title-xl">Your design system is the prompt.</h1>
+    <span class="pill">The reframe</span>
+  </div>
+  <div class="sn"><b>The one sentence they should repeat to a colleague tomorrow.</b> Say it, pause, say it again. Then the consequence: every hour spent on naming and tokens is now prompt engineering, whether you call it that or not.</div>
+</section>
+
+<!-- ================= 9 · WHAT THE MODEL READS ================= -->
+<section class="slide" data-chap="Chapter 1 · The Handoff" data-time="18:16" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">What The Model Reads</h1>
+    <p class="subline">Five inputs. You control all five, and four of them live in Figma.</p>
+    <div class="flow">
+      <div class="fcol" style="flex:1.1">
+        <div class="fnode in">Layer and component names</div>
+        <div class="fnode in">Nesting and structure</div>
+        <div class="fnode in">Token values and their names</div>
+        <div class="fnode in">The states you drew</div>
+        <div class="fnode in">The rules file you wrote</div>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fcol"><div class="fnode model">Model</div></div>
+      <div class="farrow">→</div>
+      <div class="fcol" style="flex:.75"><div class="fnode out">A working interface</div></div>
+    </div>
+    <p class="plainsay">Everything it gets right, you gave it. Everything it invents, you left blank.</p>
+  </div>
+  <div class="sn"><b>Colour code is consistent all night:</b> purple is input, yellow is the model, green is output. Point out that the middle box is the only one they cannot edit. <em>No yellow tab on this slide, the model node is already the yellow.</em></div>
+</section>
+
+<!-- ================= 10 · NAMING IS FUNCTIONAL ================= -->
+<section class="slide" data-chap="Chapter 1 · The Handoff" data-time="18:18" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">Naming Is Functional</h1>
+    <p class="subline">A layer name used to be a note to your teammate. It is now an instruction.</p>
+    <div class="compare">
+      <div class="cbox">
+        <div class="chead">What you shipped</div>
+        <div class="row"><span class="mark bad">✕</span><span><span class="mini">Frame 427</span></span></div>
+        <div class="row"><span class="mark bad">✕</span><span><span class="mini">Rectangle 12 copy</span></span></div>
+        <div class="row"><span class="mark bad">✕</span><span>Result: a component no one can name, referenced nowhere, rebuilt every time it appears.</span></div>
+      </div>
+      <div class="cbox">
+        <div class="chead">What it needed</div>
+        <div class="row"><span class="mark good">✓</span><span><span class="mini">Badge/Status/Open</span></span></div>
+        <div class="row"><span class="mark good">✓</span><span><span class="mini">Card/Metric/Positive</span></span></div>
+        <div class="row"><span class="mark good">✓</span><span>Result: one component, four variants, referenced by name everywhere it appears.</span></div>
+      </div>
+    </div>
+    <div class="tab">Rename before you prompt. It is the cheapest thing you will do tonight.</div>
+  </div>
+  <div class="sn"><b>Concrete, and slightly embarrassing.</b> Ask them to open any recent client file and read three layer names aloud in their head. Nobody volunteers. That is the point. <em>This is the moment to say renaming is not admin, it is the spec.</em></div>
+</section>
+
+<!-- ================= 11 · THE RULES FILE ================= -->
+<section class="slide" data-chap="Chapter 1 · The Handoff" data-time="18:20" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">The Rules File</h1>
+    <p class="subline">One file the model reads on every single run, so you stop repeating yourself in chat.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="clab" style="color:var(--purple)">Layer 01</div>
+        <div class="ct">Sources of truth</div>
+        <div class="cd">Where the tokens live. Which components are canonical. Which frame is the reference for this screen.</div>
+      </div>
+      <div class="card">
+        <div class="clab" style="color:var(--notion-text)">Layer 02</div>
+        <div class="ct">Constraints</div>
+        <div class="cd">Spacing comes from the scale. Type comes from the five steps. Every interactive element ships with its states.</div>
+      </div>
+      <div class="card" style="background:var(--yellow);border-color:#f0e488;">
+        <div class="clab" style="color:var(--gold)">Layer 03</div>
+        <div class="ct">Never</div>
+        <div class="cd" style="color:var(--gold)">No new colors. No hardcoded values. No one-off overrides to make a single screen look right.</div>
+      </div>
+    </div>
+  </div>
+  <div class="sn"><b>Show the actual file for ten seconds</b> if the room is technical enough, otherwise stay on the slide. The third card is the one they underestimate: without a "never" list the model is helpful in exactly the wrong way. <em>Tell them the template is in the take-home pack.</em></div>
+</section>
+
+<!-- ================= 12 · WHY SYSTEMS PAY ================= -->
+<section class="slide" data-chap="Chapter 1 · The Handoff" data-time="18:22" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">Why Systems Pay</h1>
+    <p class="subline">This was already true before models. It just got a second payout.</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="num">671%</div>
+        <div class="sd">Return on investment measured for design system implementation in studied organisations.</div>
+        <div class="src">Forrester TEI, design systems</div>
+      </div>
+      <div class="stat">
+        <div class="num">98 min</div>
+        <div class="sd">Saved per developer, per week, after design system adoption in a studied organisation.</div>
+        <div class="src">Forrester TEI</div>
+      </div>
+    </div>
+    <div class="tab">The system was never overhead. It is the thing that compounds.</div>
+  </div>
+  <div class="sn"><b>Two numbers, no more.</b> These are for the designer who has to justify system work to a founder or a PM on Monday. Say the second payout plainly: the same file that saved a developer's week now steers the model. <em>Do not add numbers that are not on this slide.</em></div>
+</section>
+
+<!-- ================= 13 · CHAPTER 2 ================= -->
+<section class="slide chapter" data-chap="Chapter 2 · The Build" data-time="18:25" data-seg="Both">
+  <div class="box">
+    <div class="chap-n">Chapter 2</div>
+    <div class="chap-name">The Build</div>
+  </div>
+  <div class="sn"><b>35 minutes, hands on keyboards.</b> Vidushi takes tooling failures, I take design decisions. Announce the split out loud so people know who to flag. <em>Target: everyone clears rung 3 by 18:50, rung 4 is the last ten minutes.</em></div>
+</section>
+
+<!-- ================= 14 · THE LADDER ================= -->
+<section class="slide" data-chap="Chapter 2 · The Build" data-time="18:26" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">The Ladder</h1>
+    <p class="subline">Four rungs. Each one proves something the one before it could not.</p>
+    <ol class="nums">
+      <li><span class="n">01</span><span><b>One component</b><span class="d">Build <span class="mini">Button/Primary</span> with its variants. Proves the token path is real and not a coincidence.</span></span></li>
+      <li><span class="n">02</span><span><b>One block</b><span class="d">Build the metric row from the component you just made. Proves reuse, and catches the model quietly cloning instead of referencing.</span></span></li>
+      <li><span class="n">03</span><span><b>The screen, with states</b><span class="d">Empty, loading, error. Proves the part nobody gets for free, because nobody asks for it.</span></span></li>
+      <li><span class="n">04</span><span><b>The change request</b><span class="d">One token moves. Proves whether you built a system or a very tidy screenshot.</span></span></li>
+    </ol>
+  </div>
+  <div class="sn"><b>Read rung 4 last and slowly.</b> That is the rung the evening is built around. Everything before it is setup for that moment. <em>If the room is running late, cut rung 2, never rung 4.</em></div>
+</section>
+
+<!-- ================= 15 · HANDS ON 1 ================= -->
+<section class="slide hands" data-chap="Chapter 2 · The Build" data-time="18:28" data-seg="Both">
+  <div class="handsbar"><span>Hands on</span><span>Chapter 2 · The Build</span></div>
+  <div class="box">
+    <h1 class="title-md">Rungs One To Three</h1>
+    <div class="steps">
+      <div class="step"><span class="circ">1</span><span class="txt">Open the starter file. Read the component names before you type a single prompt.</span></div>
+      <div class="step"><span class="circ">2</span><span class="txt">Build <code>Button/Primary</code>. Then check: did the color arrive as a token, or as a hex?</span></div>
+      <div class="step"><span class="circ">3</span><span class="txt">Build the metric row, then the full screen with its empty, loading and error states.</span></div>
+    </div>
+  </div>
+  <div class="sn"><b>Leave this slide up the whole block.</b> Walk the room. The single most common failure is people prompting before reading the file, then blaming the output. <em>Call out the first person who gets a real token reference, on the projector if they will let you.</em></div>
+</section>
+
+<!-- ================= 16 · RUNG FOUR ================= -->
+<section class="slide peri" data-chap="Chapter 2 · The Build" data-time="18:50" data-seg="Hooman">
+  <div class="box center">
+    <h1 class="title-lg">Change one token. Watch the whole screen follow.</h1>
+    <span class="pill">Rung four</span>
+  </div>
+  <div class="sn"><b>The payoff moment of the evening.</b> Do it on the projector first, live, in one edit. Then send them to do it. If the screen follows, the system held. If they have to touch five files, the system leaked and that is the real lesson. <em>Either result is a win, say so before they start.</em></div>
+</section>
+
+<!-- ================= 17 · HANDS ON 2 ================= -->
+<section class="slide hands" data-chap="Chapter 2 · The Build" data-time="18:52" data-seg="Both">
+  <div class="handsbar"><span>Hands on</span><span>Chapter 2 · The Build</span></div>
+  <div class="box">
+    <h1 class="title-md">The Change Request</h1>
+    <div class="steps">
+      <div class="step"><span class="circ">1</span><span class="txt">Open the <code>Change Request</code> frame. Find the two things that moved.</span></div>
+      <div class="step"><span class="circ">2</span><span class="txt">Change the tokens. Change nothing else. Do not let the model "help" by editing components.</span></div>
+      <div class="step"><span class="circ">3</span><span class="txt">If you had to touch a component to get there, your system leaked. Find exactly where.</span></div>
+    </div>
+  </div>
+  <div class="sn"><b>Step 3 is the teaching, not steps 1 and 2.</b> Collect two or three leak locations from the room, you will reuse them in the critique chapter. <em>Hard stop at 19:00 whatever state they are in.</em></div>
+</section>
+
+<!-- ================= 18 · CHAPTER 3 ================= -->
+<section class="slide chapter" data-chap="Chapter 3 · The Critique" data-time="19:00" data-seg="Hooman">
+  <div class="box">
+    <div class="chap-n">Chapter 3</div>
+    <div class="chap-name">The Critique</div>
+  </div>
+  <div class="sn"><b>My hour.</b> Twenty minutes teaching the method, thirty minutes of them running it on their own build, ten minutes of showing two or three on the projector. This is the part that makes the evening a design workshop rather than a tools class.</div>
+</section>
+
+<!-- ================= 19 · PLAUSIBLE NOT CORRECT ================= -->
+<section class="slide" data-chap="Chapter 3 · The Critique" data-time="19:01" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">Plausible, Not Correct</h1>
+    <p class="subline">The model is extremely good at producing something that looks finished.</p>
+    <div class="compare">
+      <div class="cbox">
+        <div class="chead">What you get for free</div>
+        <div class="row"><span class="mark good">✓</span><span>A layout that reads at a glance</span></div>
+        <div class="row"><span class="mark good">✓</span><span>Colors that are roughly the right colors</span></div>
+        <div class="row"><span class="mark good">✓</span><span>Copy sitting in the right places</span></div>
+        <div class="row"><span class="mark good">✓</span><span>Something you could screenshot and post</span></div>
+      </div>
+      <div class="cbox">
+        <div class="chead">What you never get unless you ask</div>
+        <div class="row"><span class="mark bad">✕</span><span>Spacing that holds the scale instead of drifting</span></div>
+        <div class="row"><span class="mark bad">✕</span><span>Hierarchy that survives real content lengths</span></div>
+        <div class="row"><span class="mark bad">✕</span><span>The states nobody drew</span></div>
+        <div class="row"><span class="mark bad">✕</span><span>A visible focus ring and a usable target size</span></div>
+      </div>
+    </div>
+    <div class="tab">The right column is your job. It is also the part that is not automated.</div>
+  </div>
+  <div class="sn"><b>Do not let this sound anti-AI.</b> The left column is genuinely valuable and took a week five years ago. The argument is about where the designer's scarcity moved, not about whether the tool is good. <em>Watch the tone here, the room contains both evangelists and sceptics.</em></div>
+</section>
+
+<!-- ================= 20 · SIX PASSES ================= -->
+<section class="slide" data-chap="Chapter 3 · The Critique" data-time="19:05" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">Six Passes</h1>
+    <p class="subline">Run them in this order. Structure before surface, always, or you fix the same thing twice.</p>
+    <ol class="nums two">
+      <li><span class="n">01</span><span><b>Tokens</b><span class="d">Is every value coming from the system, or has something been hardcoded?</span></span></li>
+      <li><span class="n">02</span><span><b>Structure</b><span class="d">Are these your named components, or lookalikes rebuilt from scratch?</span></span></li>
+      <li><span class="n">03</span><span><b>Hierarchy</b><span class="d">Does the eye land where the design sent it, with real content in place?</span></span></li>
+      <li><span class="n">04</span><span><b>States</b><span class="d">Hover, focus, disabled, empty, loading, error. All six, every time.</span></span></li>
+      <li><span class="n">05</span><span><b>Responsive</b><span class="d">What breaks at 390 pixels wide, and what silently overflows?</span></span></li>
+      <li><span class="n">06</span><span><b>Accessibility floor</b><span class="d">Contrast, visible focus, target size, and semantics that match the meaning.</span></span></li>
+    </ol>
+  </div>
+  <div class="sn"><b>The reference slide of the evening.</b> Leave it up during their critique block. Justify the order with one example: fixing spacing on a component that should not exist wastes the fix twice. <em>Tell them this checklist is in the take-home pack, so nobody photographs it.</em></div>
+</section>
+
+<!-- ================= 21 · THE CRITIQUE PROMPT ================= -->
+<section class="slide" data-chap="Chapter 3 · The Critique" data-time="19:10" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">The Critique Prompt</h1>
+    <p class="subline">Hand the model your checklist and make it audit its own work against the frame.</p>
+    <div class="code">Compare the current build against the frame <span class="ky">Inbox/Desktop</span>.
+
+Run these six passes, in order:
+<span class="ky">tokens · structure · hierarchy · states · responsive · accessibility</span>
+
+For each pass, list what fails and the exact file and line.
+<span class="cm">Do not fix anything yet. I will decide what gets fixed.</span></div>
+    <div class="tab">Separate finding from fixing. The finding can be delegated. The decision cannot.</div>
+  </div>
+  <div class="sn"><b>The last line is the whole slide.</b> If you let it fix while it finds, you lose the review and inherit changes you never read. Demo the difference live if there is time: same build, with and without the final line. <em>This prompt ships in the take-home pack.</em></div>
+</section>
+
+<!-- ================= 22 · THE TWO TRAPS ================= -->
+<section class="slide" data-chap="Chapter 3 · The Critique" data-time="19:14" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">The Two Traps</h1>
+    <p class="subline">We planted two faults in the starter file. Your build inherited both, silently.</p>
+    <div class="compare">
+      <div class="cbox">
+        <div class="chead">Trap one</div>
+        <div class="row"><span class="mark bad">✕</span><span>A component named <span class="mini">Group 12</span></span></div>
+        <div class="row"><span class="mark bad">✕</span><span>It compiled. It rendered. It looks correct on screen, and nobody on your team can reference it, extend it or find it again.</span></div>
+      </div>
+      <div class="cbox">
+        <div class="chead">Trap two</div>
+        <div class="row"><span class="mark bad">✕</span><span>One card using <span class="mini">#2E7D32</span> instead of a token</span></div>
+        <div class="row"><span class="mark bad">✕</span><span>It survived rung four untouched. Every other card followed the change. That one card is now permanently wrong.</span></div>
+      </div>
+    </div>
+    <p class="plainsay">Neither of these is a model failure. Both are handoff failures, and both were yours to catch.</p>
+  </div>
+  <div class="sn"><b>The best five minutes of the night if you time it right.</b> Do not reveal the traps until at least one person has found one on their own, then credit them by name. <em>If nobody found them, that is a stronger point, not a weaker one.</em></div>
+</section>
+
+<!-- ================= 23 · HANDS ON 3 ================= -->
+<section class="slide hands" data-chap="Chapter 3 · The Critique" data-time="19:20" data-seg="Both">
+  <div class="handsbar"><span>Hands on</span><span>Chapter 3 · The Critique</span></div>
+  <div class="box">
+    <h1 class="title-md">Run The Six Passes</h1>
+    <div class="steps">
+      <div class="step"><span class="circ">1</span><span class="txt">Run the critique prompt against your own build. Read the whole list before you touch anything.</span></div>
+      <div class="step"><span class="circ">2</span><span class="txt">Fix passes one and two only. Tokens and structure. Leave the surface alone.</span></div>
+      <div class="step"><span class="circ">3</span><span class="txt">Re-run the pass. Notice how many surface problems fixed themselves.</span></div>
+    </div>
+  </div>
+  <div class="sn"><b>Thirty minutes. Walk the room the whole time.</b> Step 3 is the lesson: most hierarchy and spacing complaints disappear once structure is right. Pick two builds to show at 19:50, ask permission first. <em>Warn the room at 19:45 that we are wrapping.</em></div>
+</section>
+
+<!-- ================= 24 · CHAPTER 4 ================= -->
+<section class="slide chapter" data-chap="Chapter 4 · Monday" data-time="19:50" data-seg="Hooman">
+  <div class="box">
+    <div class="chap-n">Chapter 4</div>
+    <div class="chap-name">Monday</div>
+  </div>
+  <div class="sn"><b>Ten minutes, high energy, then questions.</b> The job of this chapter is to stop the evening being a fun night that changes nothing on Monday.</div>
+</section>
+
+<!-- ================= 25 · TAKE HOME ================= -->
+<section class="slide" data-chap="Chapter 4 · Monday" data-time="19:51" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">What You Take Home</h1>
+    <p class="subline">Sent within 48 hours. Keep the files and reuse them after tonight.</p>
+    <div class="plist">
+      <div class="p"><b>The starter Figma file</b> · design system, components, all states</div>
+      <div class="p"><b>The rules file template</b> · sources of truth, constraints, never</div>
+      <div class="p"><b>The four build prompts</b> · one per rung of the ladder</div>
+      <div class="p"><b>The six-pass critique checklist</b> · plus the critique prompt</div>
+      <div class="p"><b>The troubleshooting guide</b> · the eight failures we saw tonight</div>
+    </div>
+  </div>
+  <div class="sn"><b>Say "within 48 hours" and then actually do it.</b> This is the credibility promise from the Luma page. <em>Mention that the troubleshooting guide is written after tonight, from tonight's actual failures, not a generic list.</em></div>
+</section>
+
+<!-- ================= 26 · MONDAY MORNING ================= -->
+<section class="slide" data-chap="Chapter 4 · Monday" data-time="19:53" data-seg="Hooman">
+  <div class="box">
+    <h1 class="title-md">Monday Morning</h1>
+    <p class="subline">How to point this at your own work without blocking a week on it.</p>
+    <ol class="nums">
+      <li><span class="n">01</span><span><b>Pick a screen you already designed</b><span class="d">Not a new idea. Something shipped, something real, something you already know is right.</span></span></li>
+      <li><span class="n">02</span><span><b>Rename it properly and write the rules file</b><span class="d">One hour, no code. This is the part everyone skips and the part that decides the result.</span></span></li>
+      <li><span class="n">03</span><span><b>Build one component, then ask for the change request</b><span class="d">If the change propagates, your system is real. If it does not, you found the leak in an hour instead of a quarter.</span></span></li>
+    </ol>
+    <div class="tab">If step two feels slow, that is the work. It is also the return.</div>
+  </div>
+  <div class="sn"><b>Be specific about the hour.</b> Designers will not start a system rewrite, but they will spend one hour renaming one screen. That is the wedge. <em>Offer the room a follow-up: send me what you built in a week.</em></div>
+</section>
+
+<!-- ================= 27 · ONE INSTINCT ================= -->
+<section class="slide peri" data-chap="Chapter 4 · Monday" data-time="19:57" data-seg="Hooman">
+  <div class="box center">
+    <h1 class="title-xl">Fix the system, not the screen.</h1>
+    <span class="pill">One instinct</span>
+  </div>
+  <div class="sn"><b>Last slide before questions.</b> If they remember one line from three hours, this is the one. Pair it back to rung four and the traps: every fix you make on a single screen is a fix you will make again. <em>Pause, then open the floor.</em></div>
+</section>
+
+<!-- ================= 28 · QUESTIONS ================= -->
+<section class="slide red" data-chap="Chapter 4 · Monday" data-time="20:00" data-seg="Both">
+  <div class="box center">
+    <h1>Questions.</h1>
+    <p class="subline">Then coffee, and whatever you built. Networking from 20:30.</p>
+  </div>
+  <div class="sn"><b>Thirty minutes, both hosts.</b> Prepared answers ready for: "does this replace developers", "what about a codebase that already exists", "which models", "what if we have no design system at all". <em>Close by naming where the files will arrive and from which address.</em></div>
+</section>
+
+</div></div>
+
+<!-- Presenter notes -->
+<div class="notes" id="notes">
+  <div class="nmeta"><span class="time" id="nTime">17:30</span> · <span id="nSeg">Hooman</span> · <span id="nChap">Figma to Function</span> · <span id="nNum">01 / 28</span></div>
+  <div class="nbody" id="nBody"></div>
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="Previous">←</button>
+  <button id="next" aria-label="Next">→</button>
+  <button id="notesBtn" aria-label="Toggle notes" style="width:auto;padding:0 12px;font-size:12px;font-family:var(--mono);letter-spacing:1px;">NOTES</button>
+</div>
+<div class="hint" id="hint">← → navigate · N notes · F fullscreen</div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(stage.querySelectorAll('.slide'));
+  var total = slides.length;
+  var i = 0;
+
+  // --- inject corner chrome into every slide ---
+  slides.forEach(function(s, idx){
+    var chap = s.dataset.chap || '';
+    var n = String(idx+1).padStart(2,'0');
+    var tot = String(total).padStart(2,'0');
+    var isChapterDivider = s.classList.contains('chapter');
+    var isHands = s.classList.contains('hands');
+    var html = '';
+    if(!isHands){
+      html += '<div class="ch tl">'+chap+'</div>';
+      html += '<div class="ch tr">Co-Work &amp; Code</div>';
+    }
+    html += '<div class="ch bl">Berlin · 2026</div>';
+    html += '<div class="ch br"><span class="n">'+n+'</span> / '+tot+'</div>';
+    s.insertAdjacentHTML('beforeend', html);
+    if(isChapterDivider){ /* divider keeps same chrome */ }
+  });
+
+  // --- scale stage to viewport ---
+  function fit(){
+    var pad = 0;
+    var vw = window.innerWidth - pad, vh = window.innerHeight - pad;
+    if(document.body.classList.contains('notes-on')){ vh = vh * 0.62; }
+    var s = Math.min(vw/1280, vh/720);
+    stage.style.transform = 'scale('+s+')';
+    var vp = document.querySelector('.viewport');
+    vp.style.alignItems = document.body.classList.contains('notes-on') ? 'flex-start' : 'center';
+    vp.style.paddingTop = document.body.classList.contains('notes-on') ? '12px' : '0';
+  }
+  window.addEventListener('resize', fit);
+
+  var nBody=document.getElementById('nBody'), nTime=document.getElementById('nTime'),
+      nSeg=document.getElementById('nSeg'), nChap=document.getElementById('nChap'), nNum=document.getElementById('nNum');
+
+  function show(n){
+    n = Math.max(0, Math.min(total-1, n));
+    slides.forEach(function(s,idx){ s.classList.toggle('is-active', idx===n); });
+    i = n;
+    var s = slides[i];
+    var note = s.querySelector('.sn');
+    nBody.innerHTML = note ? note.innerHTML : '';
+    nTime.textContent = s.dataset.time || '';
+    nSeg.textContent = s.dataset.seg || '';
+    nChap.textContent = s.dataset.chap || '';
+    nNum.textContent = String(i+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+    document.getElementById('prev').disabled = (i===0);
+    document.getElementById('next').disabled = (i===total-1);
+  }
+  function go(d){ show(i+d); document.getElementById('hint').classList.add('gone'); }
+
+  document.getElementById('next').addEventListener('click', function(){ go(1); });
+  document.getElementById('prev').addEventListener('click', function(){ go(-1); });
+  document.getElementById('notesBtn').addEventListener('click', toggleNotes);
+
+  function toggleNotes(){
+    document.body.classList.toggle('notes-on');
+    fit();
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); go(1); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(-1); }
+    else if(e.key==='Home'){ e.preventDefault(); show(0); }
+    else if(e.key==='End'){ e.preventDefault(); show(total-1); }
+    else if(e.key==='n'||e.key==='N'){ e.preventDefault(); toggleNotes(); }
+    else if(e.key==='f'||e.key==='F'){
+      if(!document.fullscreenElement){ document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); }
+      else { document.exitFullscreen && document.exitFullscreen(); }
+    }
+  });
+
+  var x0=null;
+  document.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(x0===null) return;
+    var dx=e.changedTouches[0].clientX-x0;
+    if(Math.abs(dx)>45){ go(dx<0?1:-1); }
+    x0=null;
+  },{passive:true});
+
+  // reveal nav on mouse movement, hide again when idle
+  var idle;
+  function wake(){
+    document.body.classList.add('ui-on');
+    clearTimeout(idle);
+    idle = setTimeout(function(){ document.body.classList.remove('ui-on'); }, 2200);
+  }
+  document.addEventListener('mousemove', wake);
+  document.addEventListener('click', wake);
+
+  fit();
+  show(0);
+  setTimeout(function(){ document.getElementById('hint').classList.add('gone'); }, 5000);
+})();
+</script>
+</body>
+</html>
